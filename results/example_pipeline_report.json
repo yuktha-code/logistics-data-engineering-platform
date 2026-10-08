@@ -1,0 +1,161 @@
+{
+  "source_type": [
+    "synthetic"
+  ],
+  "raw_rows": {
+    "cities": {
+      "raw": 8,
+      "distinct": 8,
+      "identical_duplicates_removed": 0
+    },
+    "customers": {
+      "raw": 2000,
+      "distinct": 2000,
+      "identical_duplicates_removed": 0
+    },
+    "drivers": {
+      "raw": 560,
+      "distinct": 560,
+      "identical_duplicates_removed": 0
+    },
+    "orders": {
+      "raw": 6000,
+      "distinct": 6000,
+      "identical_duplicates_removed": 0
+    },
+    "events": {
+      "raw": 23127,
+      "distinct": 23067,
+      "identical_duplicates_removed": 60
+    }
+  },
+  "warehouse_counts": {
+    "orders": 6000,
+    "events": 23067,
+    "cities": 8
+  },
+  "new_records": {
+    "orders": 6000,
+    "events": 23067
+  },
+  "on_time_definition": "Delivered on/before promised_at; excludes failed/cancelled orders from denominator",
+  "overall": {
+    "total_orders": 6000,
+    "delivered": 5411,
+    "on_time": 2745,
+    "on_time_pct": 50.73
+  },
+  "city_performance": [
+    {
+      "city": "Pune",
+      "state": "Maharashtra",
+      "total_orders": 816,
+      "delivered_orders": 738,
+      "cancelled_orders": 42,
+      "on_time_pct": 52.44,
+      "avg_delay_minutes": 20.14,
+      "avg_distance_km": 13.65,
+      "synthetic_gross_fare_inr": 238239.68
+    },
+    {
+      "city": "Ahmedabad",
+      "state": "Gujarat",
+      "total_orders": 803,
+      "delivered_orders": 721,
+      "cancelled_orders": 44,
+      "on_time_pct": 48.82,
+      "avg_delay_minutes": 22.31,
+      "avg_distance_km": 13.96,
+      "synthetic_gross_fare_inr": 240136.22
+    },
+    {
+      "city": "Chennai",
+      "state": "Tamil Nadu",
+      "total_orders": 801,
+      "delivered_orders": 722,
+      "cancelled_orders": 47,
+      "on_time_pct": 51.25,
+      "avg_delay_minutes": 21.37,
+      "avg_distance_km": 13.67,
+      "synthetic_gross_fare_inr": 235192.67
+    },
+    {
+      "city": "Kolkata",
+      "state": "West Bengal",
+      "total_orders": 758,
+      "delivered_orders": 681,
+      "cancelled_orders": 43,
+      "on_time_pct": 53.74,
+      "avg_delay_minutes": 19.88,
+      "avg_distance_km": 13.41,
+      "synthetic_gross_fare_inr": 219418.27
+    },
+    {
+      "city": "Hyderabad",
+      "state": "Telangana",
+      "total_orders": 749,
+      "delivered_orders": 684,
+      "cancelled_orders": 41,
+      "on_time_pct": 50.0,
+      "avg_delay_minutes": 21.54,
+      "avg_distance_km": 13.71,
+      "synthetic_gross_fare_inr": 220737.91
+    },
+    {
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "total_orders": 745,
+      "delivered_orders": 660,
+      "cancelled_orders": 51,
+      "on_time_pct": 50.61,
+      "avg_delay_minutes": 21.0,
+      "avg_distance_km": 13.76,
+      "synthetic_gross_fare_inr": 219946.63
+    },
+    {
+      "city": "Delhi",
+      "state": "Delhi",
+      "total_orders": 695,
+      "delivered_orders": 641,
+      "cancelled_orders": 32,
+      "on_time_pct": 49.14,
+      "avg_delay_minutes": 22.26,
+      "avg_distance_km": 13.79,
+      "synthetic_gross_fare_inr": 205405.44
+    },
+    {
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "total_orders": 633,
+      "delivered_orders": 564,
+      "cancelled_orders": 44,
+      "on_time_pct": 49.47,
+      "avg_delay_minutes": 21.04,
+      "avg_distance_km": 13.73,
+      "synthetic_gross_fare_inr": 187440.81
+    }
+  ],
+  "quality_checks": {
+    "source_schema_valid": true,
+    "source_primary_keys_valid": true,
+    "source_foreign_keys_valid": true,
+    "source_temporal_rules_valid": true,
+    "source_numeric_ranges_valid": true,
+    "no_conflicting_duplicate_ids": true,
+    "dim_city_includes_source": true,
+    "dim_customer_includes_source": true,
+    "dim_driver_includes_source": true,
+    "stg_orders_includes_source": true,
+    "stg_events_includes_source": true,
+    "fact_delivery_includes_source": true,
+    "fact_delivery_event_includes_source": true,
+    "fact_delivery_city_id_fk_valid": true,
+    "fact_delivery_customer_id_fk_valid": true,
+    "fact_delivery_driver_id_fk_valid": true,
+    "fact_delivery_event_order_id_fk_valid": true,
+    "delivered_have_on_time": true,
+    "non_delivered_no_on_time": true,
+    "duplicates_removed_from_raw": true,
+    "all_source_orders_loaded": true
+  }
+}

@@ -1,0 +1,2 @@
+# Installed inside official Airflow image, not required for standalone ETL.
+psycopg2-binary>=2.9,<3.0

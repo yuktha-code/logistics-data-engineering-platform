@@ -1,0 +1,23 @@
+{
+  "source_schema_valid": true,
+  "source_primary_keys_valid": true,
+  "source_foreign_keys_valid": true,
+  "source_temporal_rules_valid": true,
+  "source_numeric_ranges_valid": true,
+  "no_conflicting_duplicate_ids": true,
+  "dim_city_includes_source": true,
+  "dim_customer_includes_source": true,
+  "dim_driver_includes_source": true,
+  "stg_orders_includes_source": true,
+  "stg_events_includes_source": true,
+  "fact_delivery_includes_source": true,
+  "fact_delivery_event_includes_source": true,
+  "fact_delivery_city_id_fk_valid": true,
+  "fact_delivery_customer_id_fk_valid": true,
+  "fact_delivery_driver_id_fk_valid": true,
+  "fact_delivery_event_order_id_fk_valid": true,
+  "delivered_have_on_time": true,
+  "non_delivered_no_on_time": true,
+  "duplicates_removed_from_raw": true,
+  "all_source_orders_loaded": true
+}
