@@ -1,4 +1,6 @@
-# Last-Mile Logistics ETL & Delivery Reliability Platform
+# Logistics Data Engineering Platform — Delivery Reliability
+
+[![ETL quality and rerun safety](https://github.com/yuktha-code/logistics-data-engineering-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/yuktha-code/logistics-data-engineering-platform/actions/workflows/ci.yml)
 
 **A reproducible data-engineering portfolio project built around the operational data problems of last-mile logistics.**
 
