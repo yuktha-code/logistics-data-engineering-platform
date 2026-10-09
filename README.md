@@ -4,7 +4,7 @@
 
 Python 3.11 · SQLAlchemy · SQLite (zero-Docker local path) · PostgreSQL 16 (Docker path) · Apache Airflow 2.10 (optional orchestration) · SQL · pytest · GitHub Actions
 
-> **Data provenance:** The default project is built entirely from **simulated logistics orders, synthetic driver IDs and simulated GPS/status events**. It is **not a Porter production system** and has **no access to Porter's data**. Optionally, it can process the separate public **Olist Brazilian e-commerce order dataset** without inventing drivers, GPS coordinates or delivery revenue.
+> **Data provenance:** The default project is built entirely from **simulated logistics orders, synthetic driver IDs and simulated GPS/status events**. It is **not a production logistics system** and has **no access to any provider's private data**. Optionally, it can process the separate public **Olist Brazilian e-commerce order dataset** without inventing drivers, GPS coordinates or delivery revenue.
 
 ## What the project demonstrates
 
@@ -38,7 +38,7 @@ flowchart TD
 From PowerShell, enter the **project folder containing `run_pipeline.py`**:
 
 ```powershell
-cd "$env:USERPROFILE\Downloads\Porter_LastMile_Logistics_Platform"
+cd "$env:USERPROFILE\Downloads\last-mile-logistics-data-platform"
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe run_pipeline.py all
@@ -70,7 +70,7 @@ With Docker Desktop running:
 
 ```powershell
 docker compose up -d postgres
-$env:WAREHOUSE_URL = 'postgresql+psycopg2://porterdev:porterdev_change_me@localhost:5433/logistics'
+$env:WAREHOUSE_URL = 'postgresql+psycopg2://logistics_dev:logistics_dev_change_me@localhost:5433/logistics'
 .\.venv\Scripts\python.exe run_pipeline.py all
 .\.venv\Scripts\python.exe run_pipeline.py load
 ```
@@ -78,8 +78,8 @@ $env:WAREHOUSE_URL = 'postgresql+psycopg2://porterdev:porterdev_change_me@localh
 Inspect:
 
 ```powershell
-docker compose exec postgres psql -U porterdev -d logistics -c 'SELECT * FROM mart_city_performance ORDER BY total_orders DESC;'
-docker compose exec postgres psql -U porterdev -d logistics -c 'SELECT * FROM pipeline_audit ORDER BY run_finished DESC LIMIT 3;'
+docker compose exec postgres psql -U logistics_dev -d logistics -c 'SELECT * FROM mart_city_performance ORDER BY total_orders DESC;'
+docker compose exec postgres psql -U logistics_dev -d logistics -c 'SELECT * FROM pipeline_audit ORDER BY run_finished DESC LIMIT 3;'
 ```
 
 The Docker configuration uses **development-only default credentials**. Never reuse these credentials in a real deployment.
@@ -91,7 +91,7 @@ Airflow is not needed to run the ETL; it is an optional layer that demonstrates 
 ```powershell
 docker compose --profile airflow up -d --build
 docker compose exec airflow airflow dags list
-docker compose exec airflow airflow dags trigger porter_last_mile_etl
+docker compose exec airflow airflow dags trigger logistics_etl
 ```
 
 Open <http://localhost:8080> to inspect the DAG. To retrieve the automatically generated standalone admin password:
@@ -106,13 +106,13 @@ The DAG sets `WAREHOUSE_URL` to Docker's PostgreSQL hostname `postgres:5432`. It
 
 ## 4. Optional real, public Olist historical orders
 
-Olist's **Brazilian E-Commerce Public Dataset** provides historical e-commerce orders and customer locations, not Porter trip histories or telematics. Obtain `olist_orders_dataset.csv` and `olist_customers_dataset.csv` from the [Olist public Kaggle dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), and place both in `data/olist/`.
+Olist's **Brazilian E-Commerce Public Dataset** provides historical e-commerce orders and customer locations, not private carrier trip histories or telematics. Obtain `olist_orders_dataset.csv` and `olist_customers_dataset.csv` from the [Olist public Kaggle dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), and place both in `data/olist/`.
 
 ```powershell
 .\.venv\Scripts\python.exe run_pipeline.py olist --limit 5000 --database-url 'sqlite:///data/olist_warehouse.sqlite'
 ```
 
-**Important:** Use a **separate** warehouse from the synthetic one, as shown. Olist estimated delivery is date-level and is converted to end-of-day. `driver_id`, GPS coordinates, shipping distance and fare are left missing, not fabricated. `CREATED`, `PICKED_UP`, `DELIVERED` events are reconstructed from recorded milestones; they are **not GPS pings or directly observed tracking events**. Olist contains Brazilian customer city/state data, so do not market it as Indian logistics or Porter operational data.
+**Important:** Use a **separate** warehouse from the synthetic one, as shown. Olist estimated delivery is date-level and is converted to end-of-day. `driver_id`, GPS coordinates, shipping distance and fare are left missing, not fabricated. `CREATED`, `PICKED_UP`, `DELIVERED` events are reconstructed from recorded milestones; they are **not GPS pings or directly observed tracking events**. Olist contains Brazilian customer city/state data, so do not market it as Indian logistics or private logistics operational data.
 
 ## 5. Query the warehouse
 
@@ -144,12 +144,12 @@ SELECT MAX(ingested_at) AS latest_event_ingest_time FROM fact_delivery_event;
 
 **On-time % = delivered on/before promised timestamp / all delivered orders × 100.** A cancelled or failed order is not counted in that denominator; report cancellation and failure separately. `delay_minutes` is zero for early/on-time arrivals, positive for late deliveries and NULL if not delivered. The `synthetic_gross_fare_inr` metric is **simulated gross booked fare**, not collected revenue or contribution margin. `mart_driver_daily` records daily **assignments/completions**, not driver utilization because available/on-duty driver hours are not measured.
 
-For the deterministic default simulation (`--orders 6000 --seed 42`), the first executed run produced 6,000 orders (5,411 marked delivered), 23,067 distinct event records and 60 removed duplicate raw event rows, with an overall on-time value of 50.73% on delivered orders. These figures are deliberately simulation-dependent, **not observations or claims about Porter**. Example outputs are committed in `results/example_pipeline_report.json` and `results/example_quality_checks.json`.
+For the deterministic default simulation (`--orders 6000 --seed 42`), the first executed run produced 6,000 orders (5,411 marked delivered), 23,067 distinct event records and 60 removed duplicate raw event rows, with an overall on-time value of 50.73% on delivered orders. These figures are deliberately simulation-dependent, **not observations or claims about any logistics operator**. Example outputs are committed in `results/example_pipeline_report.json` and `results/example_quality_checks.json`.
 
 ## 7. Project structure
 
 ```text
-Porter_LastMile_Logistics_Platform/
+last-mile-logistics-data-platform/
   run_pipeline.py            # generate / load / check / olist commands
   src/
     synthetic.py             # deterministic simulated lifecycle and GPS events
@@ -159,7 +159,7 @@ Porter_LastMile_Logistics_Platform/
     schema.sql               # staging + dimensional tables, indexes, audit
     marts.sql                # analytical warehouse views
   dags/
-    porter_logistics_etl.py  # optional Airflow orchestration
+    logistics_etl.py  # optional Airflow orchestration
   tests/
     test_pipeline.py         # regression tests and failure cases
   results/
@@ -195,13 +195,6 @@ Porter_LastMile_Logistics_Platform/
 - **Why Airflow?** To manage task dependencies, retry failures and inspect run history; core ETL remains runnable without the orchestrator.
 - **What would you add in production?** CDC/incremental watermark by `ingested_at`, partitioned object storage, Great Expectations/dbt tests, observability/alerts, secret management and real performance benchmarking.
 
-## Resume phrasing (only after you personally run the package)
+## Scope
 
-**Last-Mile Logistics ETL & Delivery Reliability Platform — Python, SQL, PostgreSQL, Airflow, Docker**
-
-- Built a reproducible logistics ETL prototype with SQL staging tables, dimensional facts, idempotent upserts and automated schema, foreign-key, temporal and duplicate-event quality checks.
-- Produced city/day delivery reliability marts with explicit SLA denominators, exception analysis and source-to-warehouse reconciliation; implemented an optional Airflow DAG and PostgreSQL Docker configuration.
-
-**Only say PostgreSQL/Airflow are deployed once you have successfully run those configurations.** For standalone-only results, list **Python, SQL, SQLite, ETL, Data Quality**.
-
-*Independent portfolio demonstration inspired by public data-engineering patterns; not affiliated with Porter, Olist, or any employer.*
+This is an independent, reproducible engineering demonstration. All default-order, driver, fare, and GPS figures are simulated, and no proprietary operational data is used.
