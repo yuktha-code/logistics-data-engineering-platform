@@ -28,4 +28,4 @@ Source-specific assumptions:
 
 ## Why Olist is optional
 
-An offline self-contained simulation runs without download, login, Kaggle API keys, Docker or proprietary logistics data. The Olist adapter lets recruiters inspect what changes when historical third-party operational data is substituted, while explicitly preserving unavailable fields rather than inventing driver-level utilization or GPS readings.
+An offline self-contained simulation runs without download, login, Kaggle API keys, Docker or proprietary logistics data. The Olist adapter lets readers inspect what changes when historical third-party operational data is substituted, while explicitly preserving unavailable fields rather than inventing driver-level utilization or GPS readings.
