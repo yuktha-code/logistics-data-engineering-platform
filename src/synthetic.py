@@ -1,4 +1,4 @@
-"""Deterministic, fully simulated logistics data. No Porter/customer records used."""
+"""Deterministic, fully simulated logistics data. No real customer, carrier or driver records are used."""
 from __future__ import annotations
 import csv
 import random
