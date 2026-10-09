@@ -38,7 +38,7 @@ flowchart TD
 From PowerShell, enter the **project folder containing `run_pipeline.py`**:
 
 ```powershell
-cd "$env:USERPROFILE\Downloads\last-mile-logistics-data-platform"
+cd "$env:USERPROFILE\Downloads\logistics-data-engineering-platform"
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe run_pipeline.py all
@@ -149,7 +149,7 @@ For the deterministic default simulation (`--orders 6000 --seed 42`), the first 
 ## 7. Project structure
 
 ```text
-last-mile-logistics-data-platform/
+logistics-data-engineering-platform/
   run_pipeline.py            # generate / load / check / olist commands
   src/
     synthetic.py             # deterministic simulated lifecycle and GPS events
