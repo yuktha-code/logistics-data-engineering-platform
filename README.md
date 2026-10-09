@@ -186,7 +186,7 @@ last-mile-logistics-data-platform/
 6. Data checks guard common source errors, but no individual customer address, driver identity or real-world SLA calibration is included.
 7. Olist input may have dirty source records; quality failures are surfaced rather than silently rewritten.
 
-## Interview talking points
+## Engineering design decisions
 
 - **Why conflict-key upserts?** Replays or retries of the same raw batch must not duplicate facts; metrics and audit counts remain interpretable.
 - **Why validate before insert?** Orphan GPS/order events, impossible timestamps and duplicate IDs must be rejected before corrupting a warehouse.
