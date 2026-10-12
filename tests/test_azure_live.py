@@ -8,10 +8,10 @@ pytestmark = pytest.mark.skipif(os.getenv('RUN_AZURE_EMULATOR_INTEGRATION') != '
 
 
 def test_azurite_upload_download_replay(tmp_path):
-    from azure.storage.blob import BlobServiceClient
-    from src.azure_archive import upload_to_azure
+    from src.azure_archive import azure_client, upload_to_azure
     connection=os.environ['AZURE_STORAGE_CONNECTION_STRING']
-    service=BlobServiceClient.from_connection_string(connection)
+    # Exercise the same Azurite-compatible SDK client path as production code.
+    service=azure_client(connection_string=connection)
     container='porter-azure-integration'
     with service:
         client=service.get_container_client(container)
