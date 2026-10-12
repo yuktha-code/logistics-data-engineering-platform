@@ -18,3 +18,11 @@ __pycache__/
 !/results/example_pipeline_report.json
 !/results/example_quality_checks.json
 !/results/example_delivery_dashboard.html
+
+# Optional advanced prototype data and benchmark outputs
+/data/processed/
+/data/parquet/
+/results/advanced_run.json
+.DS_Store
+results/azure_archive_run.json
+results/sqlite_benchmark.json

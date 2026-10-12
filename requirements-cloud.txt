@@ -1,0 +1,4 @@
+-r requirements.txt
+# Optional: Azure cloud archive feature (real Azure and local Azurite support).
+azure-storage-blob>=12.20,<13
+azure-identity>=1.17,<2

@@ -1,0 +1,46 @@
+name: Azure SDK and Azurite integration
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/azure_archive.py'
+      - 'archive_azure.py'
+      - 'run_advanced.py'
+      - 'tests/test_azure*'
+      - 'requirements-cloud.txt'
+      - '.github/workflows/azure.yml'
+  pull_request:
+    paths:
+      - 'src/azure_archive.py'
+      - 'archive_azure.py'
+      - 'run_advanced.py'
+      - 'tests/test_azure*'
+      - 'requirements-cloud.txt'
+      - '.github/workflows/azure.yml'
+
+jobs:
+  emulator-upload-download:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install cloud client and test dependencies
+        run: python -m pip install -r requirements-cloud.txt pytest
+      - name: Start Azurite Blob emulator (local test, not actual Azure cloud)
+        run: |
+          docker run -d --name azurite-blob -p 127.0.0.1:10000:10000 \
+            mcr.microsoft.com/azure-storage/azurite \
+            azurite-blob --blobHost 0.0.0.0 --blobPort 10000
+          for i in $(seq 1 30); do
+            if curl --connect-timeout 1 -s http://127.0.0.1:10000 >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          docker logs azurite-blob
+          exit 1
+      - name: Run cloud archive tests and emulator round trip
+        env:
+          RUN_AZURE_EMULATOR_INTEGRATION: '1'
+          AZURE_STORAGE_CONNECTION_STRING: UseDevelopmentStorage=true
+        run: python -m pytest tests/test_azure_archive.py tests/test_azure_live.py -q -s

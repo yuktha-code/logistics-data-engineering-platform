@@ -1,0 +1,4 @@
+-r requirements.txt
+# Install in Python 3.11 with Java 17 available; optional heavy dependencies.
+pyspark==3.5.7
+pymongo>=4.8,<5
