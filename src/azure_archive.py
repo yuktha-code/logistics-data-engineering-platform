@@ -117,6 +117,10 @@ def azure_client(connection_string: str | None = None,
     except ImportError as exc:
         raise RuntimeError('Install requirements-cloud.txt for Azure Blob support') from exc
     if connection_string:
+        # The storage emulator can lag behind the latest Azure SDK service API.
+        # Use a known-compatible API only for Azurite; keep real Azure defaults.
+        if connection_string.strip().lower().startswith('usedevelopmentstorage=true'):
+            return BlobServiceClient.from_connection_string(connection_string, api_version='2023-11-03')
         return BlobServiceClient.from_connection_string(connection_string)
     if account_url:
         try:
