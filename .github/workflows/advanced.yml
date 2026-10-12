@@ -1,0 +1,49 @@
+name: Advanced MongoDB and Spark integration
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'src/mongo_events.py'
+      - 'src/spark_events.py'
+      - 'run_advanced.py'
+      - 'advanced_stage.py'
+      - 'tests/test_advanced*'
+      - 'requirements-advanced.txt'
+      - '.github/workflows/advanced.yml'
+  pull_request:
+    paths:
+      - 'src/mongo_events.py'
+      - 'src/spark_events.py'
+      - 'run_advanced.py'
+      - 'advanced_stage.py'
+      - 'tests/test_advanced*'
+      - 'requirements-advanced.txt'
+
+jobs:
+  mongodb-spark-sql:
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:7
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ping:1}).ok'"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - run: python -m pip install -r requirements-advanced.txt
+      - run: python -m pytest -q
+      - name: Run real MongoDB, Spark, Parquet and SQL roundtrip
+        env:
+          RUN_ADVANCED_INTEGRATION: '1'
+          MONGO_URI: mongodb://localhost:27017
+          SPARK_LOCAL_IP: 127.0.0.1
+        run: python -m pytest tests/test_advanced_integration.py -q -s

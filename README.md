@@ -184,7 +184,7 @@ logistics-data-engineering-platform/
 2. System uses in-memory CSV parsing and row-wise validation before batch database upserts. This is appropriate for a reproducible internship portfolio prototype, **not a benchmark of multi-terabyte Spark ETL**.
 3. Late-arriving milestones are handled by revisiting stable keys on rerun rather than filtering exclusively on event timestamp watermarks. `pipeline_audit` records inserted counts, not per-column change history.
 4. Geo coordinates are simulated near city centers and **must not be used for navigation, routing or real ETA calculations**.
-5. The code does not implement Kafka, Spark, distributed streaming or cloud deployment. Such skills should not be claimed based on this repository.
+5. The core SQL ETL does not use Kafka or Spark. Optional PySpark, MongoDB and Azure SDK modules are included as source-code prototypes; live service integration and cloud deployment are not verified.
 6. Data checks guard common source errors, but no individual customer address, driver identity or real-world SLA calibration is included.
 7. Olist input may have dirty source records; quality failures are surfaced rather than silently rewritten.
 
@@ -200,3 +200,16 @@ logistics-data-engineering-platform/
 ## Scope
 
 This is an independent, reproducible engineering demonstration. All default-order, driver, fare, and GPS figures are simulated, and no proprietary operational data is used.
+## Optional MongoDB, PySpark and Azure extensions (source-code prototype)
+
+The original tested SQL-based logistics pipeline remains the default. Separate optional modules add:
+
+- MongoDB raw-event document upserts (`src/mongo_events.py`).
+- PySpark event transformations, deduplication and partitioned Parquet (`src/spark_events.py`).
+- Azure Blob SDK archival, SHA-256 verification and manifests (`src/azure_archive.py`).
+- Advanced Airflow orchestration and opt-in Docker services (`dags/porter_logistics_advanced.py`, `docker-compose.yml`).
+- Offline regression tests and a **local SQLite** stress benchmark (`bench_sql_pipeline.py`).
+
+Start with [`ADVANCED_UPGRADE_GUIDE.md`](ADVANCED_UPGRADE_GUIDE.md) and [`CLOUD_AND_BENCHMARK_GUIDE.md`](CLOUD_AND_BENCHMARK_GUIDE.md).
+
+**Evidence boundary:** These advanced components are optional prototypes. The prior offline verification reported 28 tests passed, two live-service checks skipped. MongoDB/PySpark/Azure/Airflow live integrations and a real Azure cloud deployment still require separate execution before claiming them. The 25,000-order benchmark uses **synthetic orders and SQLite**, not production or distributed Spark data.

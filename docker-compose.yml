@@ -14,6 +14,25 @@ services:
       retries: 20
     volumes:
       - warehouse_pgdata:/var/lib/postgresql/data
+  azurite:
+    profiles: ['azure-emulator']
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000
+    ports:
+      - '127.0.0.1:10000:10000'
+    volumes:
+      - azurite_data:/data
+  mongo:
+    image: mongo:7
+    ports:
+      - '127.0.0.1:27018:27017'
+    volumes:
+      - mongo_events_data:/data/db
+    healthcheck:
+      test: ['CMD','mongosh','--quiet','--eval','db.adminCommand({ping:1}).ok']
+      interval: 5s
+      timeout: 5s
+      retries: 20
   airflow:
     profiles: ['airflow']
     build:
@@ -37,6 +56,41 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+  airflow_advanced:
+    profiles: ['airflow-advanced']
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow-advanced
+    command: standalone
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/project/dags
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: sqlite:////opt/airflow/airflow/airflow.db
+      AIRFLOW_HOME: /opt/airflow/airflow
+      MONGO_URI: mongodb://mongo:27017
+      WAREHOUSE_URL: postgresql+psycopg2://${POSTGRES_USER:-logistics_dev}:${POSTGRES_PASSWORD:-logistics_dev_change_me}@postgres:5432/${POSTGRES_DB:-logistics}
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+      ENABLE_AZURE_ARCHIVE: ${ENABLE_AZURE_ARCHIVE:-0}
+      AZURE_BLOB_CONTAINER: ${AZURE_BLOB_CONTAINER:-logistics-archive}
+      AZURE_BLOB_PREFIX: ${AZURE_BLOB_PREFIX:-logistics/events/v1}
+      AZURE_STORAGE_ACCOUNT_URL: ${AZURE_STORAGE_ACCOUNT_URL:-}
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING:-}
+    volumes:
+      - .:/opt/airflow/project
+      - airflow_advanced_state:/opt/airflow/airflow
+    user: '${AIRFLOW_UID:-50000}:0'
+    working_dir: /opt/airflow/project
+    ports:
+      - '8081:8080'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
 volumes:
   warehouse_pgdata:
   airflow_state:
+  mongo_events_data:
+  airflow_advanced_state:
+  azurite_data:

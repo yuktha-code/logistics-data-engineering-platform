@@ -1,0 +1,84 @@
+{
+  "environment": {
+    "system": "Linux",
+    "python": "3.13.5",
+    "processor": ""
+  },
+  "timestamp_utc": "2026-10-12T01:12:38.137860+00:00",
+  "scope": "local synthetic CSV to SQLite SQL ETL; not distributed/Spark/Mongo/Azure",
+  "runs_per_size": 2,
+  "results": [
+    {
+      "size_orders": 1000,
+      "samples": [
+        {
+          "orders": 1000,
+          "raw_events": 3871,
+          "unique_events": 3861,
+          "generation_seconds": 0.0805,
+          "validation_seconds": 0.0247,
+          "sql_load_seconds": 0.1091,
+          "sql_replay_seconds": 0.1022,
+          "load_events_per_second": 35401.7,
+          "replay_inserted_orders": 0,
+          "replay_inserted_events": 0
+        },
+        {
+          "orders": 1000,
+          "raw_events": 3871,
+          "unique_events": 3861,
+          "generation_seconds": 0.0571,
+          "validation_seconds": 0.0228,
+          "sql_load_seconds": 0.0955,
+          "sql_replay_seconds": 0.0946,
+          "load_events_per_second": 40442.4,
+          "replay_inserted_orders": 0,
+          "replay_inserted_events": 0
+        }
+      ],
+      "median": {
+        "generation_seconds": 0.0688,
+        "validation_seconds": 0.0238,
+        "sql_load_seconds": 0.1023,
+        "sql_replay_seconds": 0.0984,
+        "load_events_per_second": 37922.05
+      }
+    },
+    {
+      "size_orders": 6000,
+      "samples": [
+        {
+          "orders": 6000,
+          "raw_events": 23127,
+          "unique_events": 23067,
+          "generation_seconds": 0.3441,
+          "validation_seconds": 0.132,
+          "sql_load_seconds": 0.5283,
+          "sql_replay_seconds": 0.5642,
+          "load_events_per_second": 43659.5,
+          "replay_inserted_orders": 0,
+          "replay_inserted_events": 0
+        },
+        {
+          "orders": 6000,
+          "raw_events": 23127,
+          "unique_events": 23067,
+          "generation_seconds": 0.3666,
+          "validation_seconds": 0.1361,
+          "sql_load_seconds": 0.5242,
+          "sql_replay_seconds": 0.5413,
+          "load_events_per_second": 44006.5,
+          "replay_inserted_orders": 0,
+          "replay_inserted_events": 0
+        }
+      ],
+      "median": {
+        "generation_seconds": 0.3553,
+        "validation_seconds": 0.1341,
+        "sql_load_seconds": 0.5262,
+        "sql_replay_seconds": 0.5528,
+        "load_events_per_second": 43833.0
+      }
+    }
+  ]
+}

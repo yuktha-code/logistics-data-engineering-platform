@@ -1,0 +1,13 @@
+# Airflow's own dependencies stay inside the official image environment.
+# ETL dependencies (notably SQLAlchemy >=2) use a SEPARATE Python venv so they
+# cannot conflict with Apache Airflow 2.10.x's metadata database requirements.
+FROM apache/airflow:2.10.5-python3.11
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless \
+    && rm -rf /var/lib/apt/lists/*
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+USER airflow
+COPY requirements-advanced.txt requirements-cloud.txt requirements.txt /tmp/
+RUN python -m venv /home/airflow/etl_venv \
+    && /home/airflow/etl_venv/bin/python -m pip install --no-cache-dir \
+       -r /tmp/requirements-advanced.txt -r /tmp/requirements-cloud.txt
